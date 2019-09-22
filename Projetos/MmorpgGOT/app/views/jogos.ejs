@@ -1,0 +1,163 @@
+<!DOCTYPE HTML>
+<html lang="pt-br">
+	<head>
+		<meta charset="UTF-8">
+
+		<title>MMORPG - Game of Thrones</title>
+		
+		<!-- JQuery -->
+		<script src="js/jquery-2.2.1.js"></script>
+
+		<!-- bootstrap - link cdn -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+	
+		<!-- incluindo css -->
+		<link href="css/style.css" rel="stylesheet">
+
+		<script>
+			const timerId = null;
+
+			$(document).ready(() =>{
+				$('#btn-sair').click(()=>{
+					window.location.href = '/sair';
+				});
+
+				$('#btn-aldeoes').click(()=>{
+					$('.msg').hide();
+					$.ajax({
+						url: '/suditos',
+						method: 'get',
+						success: function(data){
+							$('#acoes').html(data);
+						}
+					});
+				});
+
+				$('#btn-pergaminho').click(()=>{
+					$('.msg').hide();
+					$.ajax({
+						url: '/pergaminhos',
+						method: 'get',
+						success: function(data){
+							$('#acoes').html(data);
+							clearTimeout(timerId);
+							cronometro();
+						}
+					});
+				});
+			});
+
+			function cronometro(){
+				$('.rest-time').each(function(){
+					let seconds = $(this).html();
+					let currentSeconds = parseInt(seconds) -1;
+					if(currentSeconds < 0){
+						window.location.href = '/jogos?msg=C';
+					}else{
+						$(this).html(currentSeconds);
+					}
+				});
+				timerId = setTimeout('cronometro()', 1000);
+			}
+		</script>
+
+	</head>
+
+	<body class="body-jogo">
+
+		<nav class="navbar navbar-default navbar-static-top">
+			<div class="container">
+				<div class="form-group sair">
+					<button id="btn-sair" type="button" class="btn btn-info pull-right">Sair</button>
+				</div>
+			</div>
+		</nav>
+
+	    <div class="container">
+			<% if(comando == 'E') { %>
+				<div class="alert alert-danger" class="msg">
+					<strong>Operação Inválida, verifique se todos os campos estão preenchidos</strong>
+				</div>
+			<% } %>
+
+			<% if(comando == 'S') { %>
+				<div class="alert alert-info" class="msg">
+					<strong>Ação realizada com sucesso!</strong>
+				</div>
+			<% } %>
+
+			<% if(comando == 'C') { %>
+				<div class="alert alert-info" class="msg">
+					<strong>Atividade Ordenada finalizou!</strong>
+				</div>
+			<% } %>
+
+			<% if(comando == 'D') { %>
+				<div class="alert alert-info" class="msg">
+					<strong>Sua ordem foi revogada!</strong>
+				</div>
+			<% } %>
+			<div class="row">
+	    		<div class="col-sm-3 casa">
+					<img src="images/casa_<%= imgCasa %>.jpg" />
+				</div>
+
+	    		<div class="col-sm-9">
+					<div class="row barra-superior">
+						<div class="col-sm-2"> 
+							<img src="images/habilidades/temor.jpg" title="Temor" alt="Temor" />
+							<span><%= jogo.temor %></span>
+						</div>
+						
+						<div class="col-sm-2"> 
+							<img src="images/habilidades/sabedoria.jpg" title="Sabedoria" alt="Sabedoria"/>
+							<span><%= jogo.sabedoria %></span>
+						</div>
+						
+						<div class="col-sm-2"> 
+							<img src="images/habilidades/comercio.jpg" title="Comércio" alt="Comércio"/>
+							<span><%= jogo.comercio %></span>
+						</div>
+						
+						<div class="col-sm-2"> 
+							<img src="images/habilidades/magia.jpg" title="Magia" alt="Magia"/>
+							<span><%= jogo.magia %></span>
+						</div>
+					</div>
+				</div>
+	    	</div>
+			
+			<div class="row">
+				<div class="col-sm-3"></div>
+				<div class="col-sm-9">
+					<div class="acoes" id="acoes">O que deseja fazer?</div>					
+				</div>
+			</div>
+			
+		</div>	
+		
+		<div class="barra-inferior">
+			<div class="container">
+			
+				<div class="row">
+					<div class="col-sm-1">
+						<img src="images/outros/suditos.jpg" title="Aldeões" alt="Aldeões" id="btn-aldeoes"/>
+						<span><%= jogo.suditos %></span>
+					</div>
+					
+					<div class="col-sm-1">
+						<img src="images/outros/pergaminho.jpg" title="Pergaminhos" alt="Pergaminhos" id="btn-pergaminho"/>
+					</div>
+					
+					<div class="col-sm-8"></div>
+					
+					<div class="col-sm-2">
+						<img src="images/outros/moeda.jpg" title="Moeda" alt="Moeda"/>
+						<span><%= jogo.moeda %></span>
+					</div>
+					
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
