@@ -9,4 +9,4 @@ var personSchema = Schema({
     country: String,
 });
 
-module.exports = mongoose.model('person', personSchema);
+module.exports = mongoose.model('Person', personSchema);
