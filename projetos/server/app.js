@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Person = require('./person');
+const Product = require('./product');
 const bodyParser = require('body-parser');
 const express = require('express');
 const cors = require('cors');
@@ -16,13 +17,41 @@ mongoose.connect('mongodb://localhost:27017/namesdb',{ useNewUrlParser: true, us
 
 // routers
 app.get('/', (req, res) => {
+    res.status(200).json({
+        status: 'ok',
+        message: 'Server is running!'
+    });
+});
+app.get('/products', (req, res) => {
+    Product.find({}).lean().exec((err, result) => {
+        if(err) res.status(500).json({error: err, message: 'internal error'});
+        else res.status(200).json(result);
+    });
+});
+
+app.get('/products/:text', (req, res) => {
+    const text = req.params.text;
+    const query = {
+        $or: [
+            {name: {$regex: text, $options: 'i'}},
+            {department: {$regex: text, $options: 'i'}},
+            {price: {$regex: text, $options: 'i'}}
+        ]
+    }
+    Product.find(query).lean().exec((err, result) => {
+        if(err) res.status(500).json({error: err, messge: 'internal error'});
+        else res.status(200).json(result);
+    })
+});
+
+app.get('/names', (req, res) => {
     Person.find({}).lean().exec((err, result) => {
         if(err) res.status(500).json({ error: err, message: 'internal error'});
         else return res.status(200).json(result);
     })
 });
 
-app.get('/:text', (req, res) => {
+app.get('/names/:text', (req, res) => {
     const text = req.params.text;
     const query = {
         $or:[
@@ -35,7 +64,7 @@ app.get('/:text', (req, res) => {
     }
     Person.find(query).lean().exec((err, result) => {
         if(err) res.status(500).json({error: err, message: 'internal server'});
-        else return res.status(200).json(result);
+        else setTimeout(() => {return res.status(200).json(result)}, 2000);
     });
 });
 
