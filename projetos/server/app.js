@@ -22,6 +22,7 @@ app.get('/', (req, res) => {
         message: 'Server is running!'
     });
 });
+
 app.get('/products', (req, res) => {
     Product.find({}).lean().exec((err, result) => {
         if(err) res.status(500).json({error: err, message: 'internal error'});
@@ -29,19 +30,76 @@ app.get('/products', (req, res) => {
     });
 });
 
-app.get('/products/:text', (req, res) => {
-    const text = req.params.text;
-    const query = {
-        $or: [
-            {name: {$regex: text, $options: 'i'}},
-            {department: {$regex: text, $options: 'i'}},
-            {price: {$regex: text, $options: 'i'}}
-        ]
-    }
-    Product.find(query).lean().exec((err, result) => {
-        if(err) res.status(500).json({error: err, messge: 'internal error'});
-        else res.status(200).json(result);
-    })
+app.get('/products/name/:id', (req, res) => {
+    const id = req.params.id;
+    Product.findById(id, (err, prods) => {
+        if(err) res.status(500).send({error: err, messge: 'internal error'});
+        else if(!prods) res.status(404).send()
+        else res.status(200).send(prods.name);
+    });
+});
+
+app.get('/productserr', (req, res) => {
+    setTimeout(() => {
+        res.status(500).json({
+            message: 'Error message from server'
+        });
+    }, 2000);
+});
+
+app.get('/productsdelay', (req, res) => {
+    setTimeout(() => {
+        Product.find({}).lean().exec((err, result) => {
+            if(err) res.status(500).json({error: err, message: 'internal error'});
+            else res.status(200).json(result);
+        });
+    }, 5000);
+});
+
+app.get('/products_ids', (req, res) => {
+    Product.find({}).lean().exec((err, result) => {
+        if(err) res.status(500).json({error: err, message: 'internal error'});
+        else res.status(200).json(result.map(p => p._id));
+    });
+});
+
+app.post('/products', (req, res) => {
+    const p = new Product({
+        name: req.body.name,
+        department: req.body.department,
+        price: req.body.price
+    });
+    p.save((err, prod) => {
+        if(err) res.status(500).send({err});
+        else res.status(200).send(prod);
+    });
+});
+
+app.delete('/products/:id', (req, res) => {
+    Product.deleteOne({_id: req.params.id}, (err, prod) => {
+        if(err) res.status(500).json({ error: err, message: 'internal error'});
+        else return res.status(200).json(prod);
+    });
+});
+
+app.patch('/products/:id', (req, res) => {
+    Product.findById({_id: req.params.id}, (err, prod) => {
+        if(err) 
+            res.status(500).send(err);
+        else if(!prod) 
+            res.status(404).send({message: 'nenhum produto foi encontrado.'});
+        else {
+            prod.name = req.body.name;
+            prod.price = req.body.price;
+            prod.department = req.body.department;
+            prod.save((err, val) => {
+                if(err)
+                    res.status(500).send(err);
+                else
+                    res.status(200).send(val);
+            });
+        }
+    });
 });
 
 app.get('/names', (req, res) => {

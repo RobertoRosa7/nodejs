@@ -27,7 +27,7 @@ async function createRandomProduct(){
     for(let i = 0; i < n; i++){
         let p = new Product({
             name: faker.commerce.productName(),
-            departmente: faker.commerce.department(),
+            department: faker.commerce.department(),
             price: faker.commerce.price()
         });
         try{
