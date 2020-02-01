@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Person = require('./person');
 const Product = require('./product');
 const department_controller = require('./department_controller');
-const products_controller = require('./products_controller');
+const product_controller = require('./product_controller');
 const bodyParser = require('body-parser');
 const express = require('express');
 const cors = require('cors');
@@ -18,7 +18,7 @@ app.use(cors());
 mongoose.connect('mongodb://localhost:27017/namesdb',{ useNewUrlParser: true, useUnifiedTopology: true });
 
 app.use('/v1/department', department_controller);
-app.use('/v1/products', products_controller);
+app.use('/v1/products', product_controller);
 
 // routers
 app.get('/', (req, res) => {
