@@ -22,7 +22,7 @@ router.get('/', (req, res) => {
 });
 router.delete('/:id', (req, res) => {
     Product.deleteOne({_id: req.params.id}, (err) => {
-        (err) ? res.status(500).send({status: false, error: err}) : res.status(200).send({});
+        (err) ? res.status(500).send({status: false, error: err}) : res.status(200).send({status: true, msg: 'success'});
     });
 });
 router.patch('/:id', (req, res) => {

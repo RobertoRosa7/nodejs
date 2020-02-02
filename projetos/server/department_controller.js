@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Department = require('./department');
+const Product = require('./product');
 
 // routes
 router.post('/', (req, res) => {
@@ -14,12 +15,33 @@ router.get('/', (req, res) => {
         (err) ? res.status(500).send(err) : res.status(200).send(deps);
     });
 });
-router.delete('/:id',(req, res) => {
-    const id = req.params.id;
-    Department.deleteOne({_id: id}, (err) => {
-        (err) ? res.status(500).send({status: false, error: err}): res.status(200).send({});
-    });
-});
+// Sem Async
+// router.delete('/:id',(req, res) => {
+//     const id = req.params.id;
+//     Department.deleteOne({_id: id}, (err) => {
+//         (err) ? res.status(500).send({status: false, error: err}): res.status(200).send({});
+//     });
+// });
+
+// Com Async
+router.delete('/:id', async (req, res) => {
+    try{
+        const id = req.params.id;
+        const prods = await Product.find({departments: id}).exec();
+        if(prods.length > 0){
+            res.status(500).send({
+                status: false, msg: 'Could not remove this department, you have to fix its depencies before.'
+            })
+        }else{
+            // const err = Department.deleteOne({_id: id}).exec();
+            // (err) ? res.status(500).send({status: false, error: err}) : res.status(200).send({status: true, msg: 'department removido com sucesso.'})
+            await Department.deleteOne({_id: id});
+            res.status(200).send({status: true, msg: 'department removed successfuly'})
+        }
+    }catch(err){
+        res.status(500).send({status: false, error: err});
+    }
+})
 router.patch('/:id', (req, res) => {
     Department.findById(req.params.id, (err, dep) => {
         if(err) res.status(500).send({status: false, error: err})

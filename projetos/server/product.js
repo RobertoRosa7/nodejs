@@ -3,9 +3,9 @@ const Schema = mongoose.Schema;
 
 const ProductSchema = Schema({
     name: String,
-    department: [{type: mongoose.Schema.Types.ObjectId, ref: 'Department'}],
+    departments: [{type: mongoose.Schema.Types.ObjectId, ref: 'Department'}],
     price: Number,
     stock: Number,
 }, {versionKey: false});
 
-module.exports = mongoose.model('Product', ProductSchema);
+module.exports = mongoose.model('ProductStore', ProductSchema);
