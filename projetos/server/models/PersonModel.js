@@ -8,4 +8,4 @@ const PersonSchema = new Schema({
     "company": String,
 });
 
-module.exports = mongoose.model('Person', PersonSchema);
+module.exports = mongoose.model('Pessoa', PersonSchema);
