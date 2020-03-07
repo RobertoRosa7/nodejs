@@ -9,6 +9,7 @@ const cors = require('cors');
 const PORT = 8080;
 const app = express();
 const api = require('./routes/general');
+const auth = require('./routes/auth');
 
 // middlewares
 app.use(bodyParser.json());
@@ -21,6 +22,7 @@ mongoose.connect('mongodb://localhost:27017/namesdb',{ useNewUrlParser: true, us
 app.use('/v1/department', department_controller);
 app.use('/v1/products', product_controller);
 app.use('/api/v2', api);
+app.use('/api/v2/auth', auth);
 
 // routers
 app.get('/', (req, res) => {
