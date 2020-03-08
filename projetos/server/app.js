@@ -21,8 +21,8 @@ mongoose.connect('mongodb://localhost:27017/namesdb',{ useNewUrlParser: true, us
 
 app.use('/v1/department', department_controller);
 app.use('/v1/products', product_controller);
-app.use('/api/v2', api);
 app.use('/api/v2/auth', auth);
+app.use('/api/v2', api);
 
 // routers
 app.get('/', (req, res) => {

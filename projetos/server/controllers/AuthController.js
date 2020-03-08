@@ -48,12 +48,25 @@ module.exports = {
     authorization: function(req, res, next){
         const token = req.get('Authorization');
         if(!token) return res.status(401).json({"status":false, "msg":'Token not found!'});
-        
-        // validação do token
         jwt.verify(token, constants.key_jwt, verifyToken);
         function verifyToken(err, decoded){
             if(err || !decoded) return res.status(401).json({"status":false, "msg":'Token not valid!'});
             next();
+        }
+    },
+    userData: function(req, res){
+        const token = req.get('Authorization');
+        jwt.verify(token, constants.key_jwt, verifyToken);
+        function verifyToken(err, decoded){
+            if(err || !decoded) return res.status(401).json({"status":false, "msg":'Token not valid!'});
+            const id = decoded._id;
+            UserModel.findById(id).lean().exec(fetchUser);
+        }
+        function fetchUser(err, user){
+            if(err || !user) return res.status(500).json({"status":false, "msg":'Error trying to fetch user data'});
+            const token = jwt.sign({"_id":user._id},constants.key_jwt,{expiresIn:constants.expires_jwt});
+            delete user.password;
+            return res.status(200).json({...user,"token":token});
         }
     }
 }
