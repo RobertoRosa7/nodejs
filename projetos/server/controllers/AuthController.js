@@ -44,5 +44,16 @@ module.exports = {
                 return res.status(404).json({"status":false,"msg":"No user found!"});
             }
         });
+    },
+    authorization: function(req, res, next){
+        const token = req.get('Authorization');
+        if(!token) return res.status(401).json({"status":false, "msg":'Token not found!'});
+        
+        // validação do token
+        jwt.verify(token, constants.key_jwt, verifyToken);
+        function verifyToken(err, decoded){
+            if(err || !decoded) return res.status(401).json({"status":false, "msg":'Token not valid!'});
+            next();
+        }
     }
 }
