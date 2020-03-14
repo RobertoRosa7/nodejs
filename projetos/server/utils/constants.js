@@ -1,5 +1,5 @@
 module.exports = {
     "bcryptsalts": 10,
     "key_jwt": '123456789',
-    "expires_jwt":7200
+    "expires_jwt":86400
 }
