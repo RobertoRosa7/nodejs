@@ -1,1 +1,3 @@
+# desconsiderar quando subir para git
 node_modules
+ultils/constants.js
