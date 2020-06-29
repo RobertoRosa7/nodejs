@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const Department = require('./department');
-const Product = require('./product');
+const Department = require('../models/department');
+const Product = require('../models/product');
 
 // routes
 router.post('/', (req, res) => {
