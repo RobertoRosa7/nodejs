@@ -1,0 +1,27 @@
+<div id="pergaminhos">					
+	<h3>Pergaminhos</h3>
+	
+	<ul>
+		<% acoes.forEach(function(row) { %>
+			<% let text = ''; 
+
+				switch(parseInt(row.acao)){
+					case 1: text = 'aldeão(ões) coletando recursos'; break;
+					case 2: text = 'enforcamento(s) programado'; break;
+					case 3: text = 'aldeão(ões) em treinamento de história'; break;
+					case 4: text = 'aldeão(ões) em treinamento de magia'; break;
+				}
+
+				const date = new Date();
+				let currentMoment = date.getTime();
+				let restSeconds = Math.round((row.acaoTermina - currentMoment) / 1000);
+
+			%>
+			<li><%= row.quantidade %> <%= text %>
+				<small> - restam <span class="rest-time"><%= restSeconds %></span> segundos - 
+					<a href="/revogar-acao?id_acao=<%= row._id %>">revogar ordem</a>
+				</small>
+			</li>
+		<% }); %>
+	</ul>
+</div>
